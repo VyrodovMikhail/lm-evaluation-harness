@@ -116,21 +116,6 @@ def ter(items):
     return sacrebleu.corpus_ter(preds, refs).score
 
 
-@register_aggregation("mult_choice_exact_match")
-def mult_choice_exact_match(items):
-    scores = []
-    golds = list(zip(*items))[0]
-    preds = list(zip(*items))[1]
-
-    for gold, pred in zip(golds, preds):
-        gold_answers = gold.split(",")
-        pred_answers = pred.split(",")
-        scores.append(set(gold_answers) == set(pred_answers))
-
-    acc = np.mean(scores)
-    return acc
-
-
 @register_metric(
     metric="acc",
     higher_is_better=True,
@@ -317,10 +302,15 @@ def acc_all(items):
     metric="mult_choice_exact_match",
     higher_is_better=True,
     output_type="generate_until",
-    aggregation="mult_choice_exact_match",
+    aggregation="mean",
 )
-def mult_choice_exact_match_fn(items):
-    return items
+def mult_choice_exact_match(items):
+    scores = []
+    gold, pred = items
+
+    gold_answers = gold.split(",")
+    pred_answers = pred.split(",")
+    return set(gold_answers) == set(pred_answers)
 
 
 def acc_all_stderr(items):
