@@ -313,6 +313,22 @@ def mult_choice_exact_match(items):
     return set(gold_answers) == set(pred_answers)
 
 
+@register_metric(
+    metric="word_generation_exact_match",
+    higher_is_better=True,
+    output_type="generate_until",
+    aggregation="mean",
+)
+def word_generation_exact_match(items):
+    scores = []
+    gold_answer, pred = items
+    pred_answers = pred.split(",")
+    for pred_ans in pred_answers:
+        if gold_answer == pred_ans:
+            return 1
+    return 0
+
+
 def acc_all_stderr(items):
     # Only count as correct if all answers are labeled correctly for each question
     question_scoring_dict = {}
