@@ -320,7 +320,6 @@ def mult_choice_exact_match(items):
     aggregation="mean",
 )
 def word_generation_exact_match(items):
-    scores = []
     gold, pred_answer = items
     gold_answers = gold.split(",")
     for gold_ans in gold_answers:
